@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rectangular Pictures Grid</title>
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      overflow-x: hidden; /* Disable horizontal scrolling */
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999; /* Ensure header appears on top */
+text-decoration: none; /* Remove default link underline */
+    display: inline-block; /* Ensure button is inline */
+    -webkit-tap-highlight-color: transparent; /* For iOS Safari */
+    tap-highlight-color: transparent; /* For other browsers */
+}
+     .header-wishes {
+      position: absolute;
+      bottom: 21px;
+      left: 23px;
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      padding: 10px;
+      margin-top: 185px; /* Adjust margin-top to accommodate header */
+      margin-left: 10px; /* Add left margin for the tile container */
+      margin-right: 10px; /* Add right margin for the tile container */
+    }
+    .item {
+      width: 100%;
+      padding-bottom: 50%; /* 2:3 aspect ratio for rectangular images */
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+    }
+    .header-image {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+<header>
+    <a href="about/aboutus.html" style="position: absolute; top: 20px; left: 20px; z-index: 1000;"><img src="slidebar.png" alt="Info Icon" style="width: 25px;"></a>
+    <img class="header-image" src="header.webp" alt="Header Image">
+    <div class="header-wishes" id="header-wishes"></div> <!-- Added wishes div -->
+</header>
+
+<div class="container">
+    <a href="animal/animal.html" class="item" style="background-image: url('animal.webp');"></a>
+    <a href="bird/bird.html" class="item" style="background-image: url('bird.webp');"></a>
+    <a href="alphabet/alphabet.html" class="item" style="background-image: url('alphabet.webp');"></a>
+    <a href="number/number.html" class="item" style="background-image: url('number.webp');"></a>
+    <a href="flower/flower.html" class="item" style="background-image: url('flower.webp');"></a>
+    <a href="fruit/fruit.html" class="item" style="background-image: url('fruit.webp');"></a>
+    <a href="draw/draw.html" class="item" style="background-image: url('paint.webp');"></a>
+    <a href="game/game.html" class="item" style="background-image: url('puzzle.webp');"></a>
+    <a href="math/math.html" class="item" style="background-image: url('math.webp');"></a>
+    <a href="shape/shape.html" class="item" style="background-image: url('shapes.webp');"></a>
+    <a href="color/color.html" class="item" style="background-image: url('color.webp');"></a>
+    <a href="day/day.html" class="item" style="background-image: url('month.webp');"></a>
+    <a href="season/season.html" class="item" style="background-image: url('season.webp');"></a>
+    <a href="body/engbody.html" class="item" style="background-image: url('bodyparts.webp');"></a>
+    <a href="aoo/aoo.html" class="item" style="background-image: url('word.webp');"></a>
+    <!-- Add more images as needed -->
+</div>
+
+<script>
+     // Add greetings based on time of day
+    var time = new Date().getHours();
+    var greetings = "";
+    if (time >= 5 && time < 12) {
+        greetings = "ଶୁଭ ସକାଳ";
+    } else if (time >= 12 && time < 17) {
+        greetings = "ଶୁଭ ଅପରାହ୍ନ";
+    } else if (time >= 17 && time < 21) {
+        greetings = "ଶୁଭ ସନ୍ଧ୍ଯା";
+    } else {
+        greetings = "ଶୁଭ ରାତ୍ରି";
+    }
+    document.getElementById("header-wishes").innerText = greetings;
+</script>
+</body>
+</html>
