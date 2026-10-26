@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="or" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ପଶୁରାଜ ପିଙ୍ଗଳକ କଥା | Mobile Scrollytelling Panchatantra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Oriya:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        odia: ['"Noto Sans Oriya"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Cinzel', 'serif']
+                    },
+                    colors: {
+                        parchment: {
+                            50: '#fdfaf3',
+                            100: '#f9f1df',
+                            200: '#f1dfba',
+                            300: '#e5c68b',
+                            800: '#4a3520',
+                            900: '#2d1e10'
+                        },
+                        terracotta: {
+                            500: '#c85a32',
+                            600: '#a94422',
+                            700: '#883318'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #160f09;
+            color: #fdfaf3;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Custom Range Slider for Compact Scrubber */
+        input[type=range].story-scrubber {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        input[type=range].story-scrubber::-webkit-slider-runnable-track {
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        input[type=range].story-scrubber::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f59e0b;
+            border: 2.5px solid #fffbeb;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.9);
+            margin-top: -7px;
+            transition: transform 0.15s ease;
+        }
+        input[type=range].story-scrubber::-webkit-slider-thumb:active {
+            transform: scale(1.25);
+            background: #fbbf24;
+        }
+        /* Interactive SVG character tap/hover */
+        .interactive-entity {
+            cursor: pointer;
+            transition: filter 0.2s ease;
+        }
+        .interactive-entity:hover, .interactive-entity:active {
+            filter: drop-shadow(0px 0px 10px rgba(251, 191, 36, 0.95));
+        }
+        /* Active Story Card Styling */
+        .story-card {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease, background-color 0.35s ease;
+        }
+        .story-card.active-card {
+            border-color: #f59e0b;
+            background-color: #fdfaf3;
+            box-shadow: 0 14px 34px -6px rgba(245, 158, 11, 0.28), 0 0 0 2px rgba(245, 158, 11, 0.45);
+            opacity: 1;
+        }
+        .story-card.inactive-card {
+            background-color: #f3e6ce;
+            border-color: rgba(180, 83, 9, 0.2);
+            opacity: 0.48;
+        }
+        .odia-sentence {
+            transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+            border-radius: 6px;
+            padding: 2px 4px;
+            margin: 0 -4px;
+        }
+        .odia-sentence.active-sentence {
+            background-color: rgba(245, 158, 11, 0.28);
+            color: #1c1008;
+            font-weight: 600;
+            box-shadow: 0 1px 4px rgba(245, 158, 11, 0.2);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1c130c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b45309;
+            border-radius: 3px;
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+        .float-badge {
+            animation: floatSlow 2.6s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans selection:bg-amber-500 selection:text-stone-950">
+
+    <!-- ======================================================================= -->
+    <!-- 1. FIXED TOP HEADER & STICKY ANIMATED VISUAL STAGE (~46vh on Mobile)    -->
+    <!-- ======================================================================= -->
+    <div id="fixedTopViewport" class="fixed top-0 left-0 right-0 z-40 bg-stone-950/95 backdrop-blur-md shadow-[0_12px_30px_rgba(0,0,0,0.85)] border-b border-amber-600/40 flex flex-col">
+
+        <!-- Sleek Fixed Header Bar -->
+        <header class="px-3 py-2 sm:px-5 border-b border-stone-800/90 flex items-center justify-between gap-2">
+            <!-- Brand & Title -->
+            <div class="flex items-center gap-2 min-w-0">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-700 flex items-center justify-center shadow border border-amber-300/40 font-odia font-extrabold text-base text-stone-950 shrink-0">
+                    ପ
+                </div>
+                <div class="truncate">
+                    <h1 class="font-odia text-sm sm:text-base font-bold text-amber-300 truncate leading-tight">
+                        ପଶୁରାଜ ପିଙ୍ଗଳକ କଥା
+                    </h1>
+                    <p class="text-[10px] sm:text-xs text-stone-400 truncate leading-none mt-0.5">
+                        King Pingalaka • Scroll to animate
+                    </p>
+                </div>
+            </div>
+
+            <!-- Scene Jump Dots (Center on tablet/desktop, compact on mobile) -->
+            <div class="hidden sm:flex items-center gap-1.5 bg-stone-900/90 px-2.5 py-1 rounded-full border border-stone-800" id="headerSceneDots">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Quick Action Toggles -->
+            <div class="flex items-center gap-1.5 shrink-0">
+                <!-- Scroll Percentage Pill -->
+                <span id="headerPercentBadge" class="text-[11px] font-mono font-bold px-2 py-1 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-300">
+                    0%
+                </span>
+
+                <!-- Sound Toggle -->
+                <button id="soundToggleBtn" onclick="toggleAudio()" class="p-1.5 sm:px-2.5 sm:py-1 rounded-lg bg-stone-800 hover:bg-stone-700 border border-amber-600/30 text-xs text-amber-200 transition flex items-center gap-1" title="Toggle Sound Effects">
+                    <span id="soundIcon">🔊</span>
+                    <span class="hidden md:inline text-[11px]" id="soundLabel">SFX</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Continuous Top Linear Scroll Progress Bar -->
+        <div class="w-full h-1 bg-stone-900 overflow-hidden">
+            <div id="topLinearProgress" class="h-full bg-gradient-to-r from-amber-500 via-orange-400 to-yellow-300 w-0 transition-all duration-75"></div>
+        </div>
+
+        <!-- Sticky Animated SVG Stage Container (Responsive height: ~34vh on mobile, ~38vh on larger screens) -->
+        <div class="relative w-full h-[33vh] sm:h-[36vh] md:h-[39vh] max-h-[340px] min-h-[205px] bg-stone-900 overflow-hidden select-none mx-auto max-w-5xl">
+
+            <!-- Master Animated SVG Canvas -->
+            <svg id="storyStage" viewBox="0 0 800 450" class="w-full h-full block" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                    <linearGradient id="skyDay" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#38bdf8" id="skyStop1"/>
+                        <stop offset="65%" stop-color="#bae6fd" id="skyStop2"/>
+                        <stop offset="100%" stop-color="#fef3c7" id="skyStop3"/>
+                    </linearGradient>
+                    <linearGradient id="yamunaWater" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#0284c7"/>
+                        <stop offset="50%" stop-color="#0ea5e9"/>
+                        <stop offset="100%" stop-color="#0369a1"/>
+                    </linearGradient>
+                    <linearGradient id="hillGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#15803d"/>
+                        <stop offset="100%" stop-color="#14532d"/>
+                    </linearGradient>
+                </defs>
+
+                <!-- 1. SKY BACKGROUND -->
+                <rect width="800" height="450" fill="url(#skyDay)" />
+
+                <!-- Night Stars Group -->
+                <g id="starsGroup" opacity="0">
+                    <circle cx="95" cy="50" r="2" fill="#fff" />
+                    <circle cx="180" cy="80" r="1.5" fill="#fde68a" />
+                    <circle cx="290" cy="40" r="2.5" fill="#fff" />
+                    <circle cx="420" cy="65" r="1.8" fill="#fff" />
+                    <circle cx="550" cy="45" r="2.2" fill="#fde68a" />
+                    <circle cx="680" cy="75" r="2" fill="#fff" />
+                    <circle cx="740" cy="35" r="1.5" fill="#fff" />
+                    <circle cx="60" cy="115" r="1.5" fill="#fff" />
+                    <circle cx="620" cy="100" r="2" fill="#fde68a" />
+                </g>
+
+                <!-- Sun & Moon Celestial Bodies -->
+                <g id="celestialGroup">
+                    <g id="sunEl" transform="translate(650, 70)">
+                        <circle cx="0" cy="0" r="38" fill="#fef08a" opacity="0.3" />
+                        <circle cx="0" cy="0" r="25" fill="#facc15" />
+                    </g>
+                    <g id="moonEl" transform="translate(650, -80)" opacity="0">
+                        <circle cx="0" cy="0" r="32" fill="#e0f2fe" opacity="0.25" />
+                        <path d="M-10,-20 A22,22 0 1,0 18,14 A18,18 0 1,1 -10,-20 Z" fill="#fef9c3" />
+                    </g>
+                </g>
+
+                <!-- 2. DISTANT MOUNTAINS & FOREST HILLS (Shakes during Bull's Roar) -->
+                <g id="mountainsLayer">
+                    <path d="M-40,275 L90,150 L210,250 L350,125 L500,255 L640,140 L780,250 L840,200 L840,315 L-40,315 Z" fill="#334155" opacity="0.55" />
+                    <path d="M90,150 L130,188 L90,180 L60,190 Z" fill="#f8fafc" opacity="0.35" />
+                    <path d="M350,125 L395,170 L350,160 L315,175 Z" fill="#f8fafc" opacity="0.35" />
+
+                    <!-- Midground Forest Hills -->
+                    <path d="M-20,295 Q120,210 280,275 T580,265 T830,285 L830,350 L-20,350 Z" fill="url(#hillGrad)" />
+
+                    <!-- Background Trees -->
+                    <g id="bgTrees">
+                        <g transform="translate(80, 240)">
+                            <rect x="-5" y="20" width="10" height="35" fill="#5c3a21" />
+                            <circle cx="0" cy="10" r="25" fill="#166534" />
+                            <circle cx="-14" cy="18" r="17" fill="#14532d" />
+                            <circle cx="14" cy="18" r="17" fill="#15803d" />
+                        </g>
+                        <g transform="translate(460, 230)">
+                            <rect x="-6" y="25" width="12" height="40" fill="#5c3a21" />
+                            <circle cx="0" cy="10" r="30" fill="#15803d" />
+                            <circle cx="-18" cy="22" r="20" fill="#166534" />
+                            <circle cx="18" cy="22" r="20" fill="#14532d" />
+                        </g>
+                        <g transform="translate(710, 235)">
+                            <rect x="-5" y="20" width="10" height="35" fill="#5c3a21" />
+                            <circle cx="0" cy="10" r="24" fill="#166534" />
+                        </g>
+                    </g>
+                </g>
+
+                <!-- 3. RIVER YAMUNA (Interactive Tap Target) -->
+                <g id="yamunaRiverLayer" class="interactive-entity" onclick="inspectEntity('yamuna')">
+                    <path d="M-20,310 Q200,295 420,318 T820,305 L820,380 L-20,380 Z" fill="url(#yamunaWater)" />
+                    <g id="waterRipples" stroke="#bae6fd" stroke-width="2" stroke-linecap="round" opacity="0.65">
+                        <line x1="60" y1="330" x2="130" y2="330" />
+                        <line x1="240" y1="345" x2="330" y2="345" />
+                        <line x1="480" y1="335" x2="560" y2="335" />
+                        <line x1="650" y1="352" x2="730" y2="352" />
+                        <line x1="150" y1="360" x2="210" y2="360" />
+                    </g>
+                    <g transform="translate(690, 338)" opacity="0.88">
+                        <rect x="-55" y="-11" width="110" height="20" rx="10" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1"/>
+                        <text x="0" y="3" text-anchor="middle" fill="#e0f2fe" font-size="10.5" class="font-odia">ଯମୁନା ନଦୀ (Yamuna)</text>
+                    </g>
+                </g>
+
+                <!-- 4. FOREGROUND MEADOW & MUDDY PATH -->
+                <g id="groundLayer">
+                    <path d="M-20,362 Q260,348 520,365 T820,358 L820,460 L-20,460 Z" fill="#78350f" />
+                    <path d="M-20,380 Q260,366 520,380 T820,374 L820,450 L-20,450 Z" fill="#b45309" />
+
+                    <!-- Muddy Bank Patch (Scene 2 & early Scene 3) -->
+                    <g id="mudPatchGroup" opacity="0">
+                        <ellipse cx="400" cy="408" rx="115" ry="24" fill="#3b1d0a" />
+                        <ellipse cx="385" cy="405" rx="78" ry="15" fill="#271206" />
+                        <path d="M325,408 Q365,398 405,410 T475,405" stroke="#5c2d16" stroke-width="3" fill="none" />
+                    </g>
+
+                    <!-- Lush Emerald Grass Tufts (Grows lush from Scene 3 second half onwards) -->
+                    <g id="lushGrassGroup" opacity="0">
+                        <path d="M-20,362 Q260,348 520,365 T820,358 L820,460 L-20,460 Z" fill="#15803d" />
+                        <g stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" fill="none">
+                            <path d="M80,395 Q75,375 68,370 M80,395 Q82,373 88,367 M80,395 Q88,380 95,377" />
+                            <path d="M185,418 Q180,398 172,393 M185,418 Q187,395 193,391" />
+                            <path d="M310,405 Q305,383 296,377 M310,405 Q314,380 322,375" />
+                            <path d="M460,422 Q455,400 448,394 M460,422 Q464,400 472,392" />
+                            <path d="M590,398 Q585,378 578,373 M590,398 Q595,378 604,371" />
+                        </g>
+                    </g>
+                </g>
+
+                <!-- 5. SPOOKY FOREST EYES & FLEEING ATTENDANTS (Scene 3) -->
+                <g id="scene3Extras" opacity="0">
+                    <g transform="translate(130, 268)">
+                        <circle cx="-8" cy="0" r="3.5" fill="#ef4444" />
+                        <circle cx="8" cy="0" r="3.5" fill="#ef4444" />
+                    </g>
+                    <g transform="translate(260, 258)">
+                        <circle cx="-7" cy="0" r="3" fill="#facc15" />
+                        <circle cx="7" cy="0" r="3" fill="#facc15" />
+                    </g>
+                    <!-- Fleeing Servants Group -->
+                    <g id="fleeingAttendants" transform="translate(450, 382)" class="interactive-entity" onclick="inspectEntity('attendants')">
+                        <g transform="translate(0, 0)">
+                            <circle cx="0" cy="-36" r="9.5" fill="#d97706" />
+                            <path d="M-9,-42 Q0,-51 9,-42 Z" fill="#fef3c7" />
+                            <rect x="-6.5" y="-26" width="13" height="20" rx="4" fill="#ea580c" />
+                            <line x1="-4" y1="-6" x2="-13" y2="11" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+                            <line x1="4" y1="-6" x2="14" y2="9" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+                        </g>
+                        <g transform="translate(38, 5)">
+                            <circle cx="0" cy="-36" r="9.5" fill="#b45309" />
+                            <rect x="-6.5" y="-26" width="13" height="20" rx="4" fill="#0284c7" />
+                            <line x1="-4" y1="-6" x2="-14" y2="9" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+                            <line x1="4" y1="-6" x2="13" y2="11" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+                        </g>
+                        <g transform="translate(18, -62)">
+                            <rect x="-62" y="-20" width="124" height="22" rx="7" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+                            <text x="0" y="-5" text-anchor="middle" fill="#78350f" font-size="9.5" font-weight="bold" class="font-odia">ହିଂସ୍ରଜନ୍ତୁ ଭୟ! ପଳାଅ!</text>
+                        </g>
+                    </g>
+                </g>
+
+                <!-- 6. MERCHANT BARDHAMANAKA & WOODEN CART (Scene 1 & Scene 2) -->
+                <g id="merchantCartGroup" transform="translate(140, 382)">
+                    <g id="cartBody" class="interactive-entity" onclick="inspectEntity('bardhamanaka')">
+                        <ellipse cx="-52" cy="-40" rx="20" ry="15" fill="#d97706" stroke="#78350f" stroke-width="2" />
+                        <ellipse cx="-24" cy="-43" rx="19" ry="17" fill="#b45309" stroke="#78350f" stroke-width="2" />
+                        <path d="M-82,-30 L15,-30 L24,-13 L-86,-13 Z" fill="#92400e" stroke="#451a03" stroke-width="2" />
+                        <!-- Merchant Figure -->
+                        <g id="merchantFigure" transform="translate(-2, -32)">
+                            <path d="M-11,2 L11,2 L15,-20 L-13,-20 Z" fill="#f59e0b" />
+                            <path d="M-11,-18 Q0,-9 11,-18" stroke="#dc2626" stroke-width="3.5" fill="none" />
+                            <circle cx="0" cy="-30" r="10.5" fill="#d97706" />
+                            <path d="M-5,-27 Q0,-29 5,-27" stroke="#1c1917" stroke-width="2" fill="none" />
+                            <path d="M-12,-34 Q0,-49 13,-34 Q9,-26 -12,-34 Z" fill="#ef4444" stroke="#facc15" stroke-width="1.5" />
+                            <line x1="7" y1="-15" x2="24" y2="-24" stroke="#d97706" stroke-width="3.5" stroke-linecap="round" />
+                        </g>
+                        <!-- Yoke Beam -->
+                        <line x1="16" y1="-20" x2="110" y2="-26" stroke="#5c2d16" stroke-width="4.5" stroke-linecap="round" />
+                        <!-- Rotating Cart Wheel -->
+                        <g id="cartWheel" transform="translate(-36, -7)">
+                            <circle cx="0" cy="0" r="22" fill="none" stroke="#451a03" stroke-width="5.5" />
+                            <circle cx="0" cy="0" r="18" fill="none" stroke="#d97706" stroke-width="1.8" />
+                            <circle cx="0" cy="0" r="4.5" fill="#451a03" />
+                            <line x1="-20" y1="0" x2="20" y2="0" stroke="#78350f" stroke-width="2.5" />
+                            <line x1="0" y1="-20" x2="0" y2="20" stroke="#78350f" stroke-width="2.5" />
+                            <line x1="-14" y1="-14" x2="14" y2="14" stroke="#78350f" stroke-width="2.5" />
+                            <line x1="-14" y1="14" x2="14" y2="-14" stroke="#78350f" stroke-width="2.5" />
+                        </g>
+                    </g>
+
+                    <!-- Companion Bull -->
+                    <g id="companionBull" transform="translate(78, -10)" opacity="0.85">
+                        <rect x="-22" y="-26" width="44" height="24" rx="9" fill="#e7e5e4" stroke="#a8a29e" stroke-width="1.5" />
+                        <circle cx="-11" cy="-30" r="8" fill="#e7e5e4" />
+                        <circle cx="24" cy="-24" r="10" fill="#e7e5e4" />
+                        <path d="M22,-32 Q26,-42 32,-38" stroke="#78350f" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                        <line x1="-16" y1="-2" x2="-16" y2="14" stroke="#d6d3d1" stroke-width="4.5" stroke-linecap="round" />
+                        <line x1="15" y1="-2" x2="15" y2="14" stroke="#d6d3d1" stroke-width="4.5" stroke-linecap="round" />
+                    </g>
+                </g>
+
+                <!-- 7. THE HERO BULL (Sanjeevaka / Bardhamanaka's Bull) -->
+                <g id="heroBullWrapper" transform="translate(245, 386)" class="interactive-entity" onclick="inspectEntity('bull')">
+                    <!-- Sonic Bellow Shockwaves -->
+                    <g id="bullRoarWaves" opacity="0" transform="translate(32, -32)">
+                        <circle id="roarRing1" cx="0" cy="0" r="20" fill="none" stroke="#f59e0b" stroke-width="4" opacity="0.85" />
+                        <circle id="roarRing2" cx="0" cy="0" r="45" fill="none" stroke="#ef4444" stroke-width="3" opacity="0.65" />
+                        <circle id="roarRing3" cx="0" cy="0" r="75" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="8 4" opacity="0.5" />
+                        <text x="12" y="-42" fill="#fef08a" font-size="14" font-weight="bold" class="font-odia" stroke="#78350f" stroke-width="0.5">ଭୀଷଣ ଗର୍ଜନ! (ROAR!)</text>
+                    </g>
+
+                    <!-- Bull Body Group -->
+                    <g id="heroBullBody">
+                        <ellipse cx="0" cy="16" rx="34" ry="6.5" fill="#000" opacity="0.3" />
+                        <path id="bullTail" d="M-26,-20 Q-40,-9 -36,4" stroke="#f5f5f4" stroke-width="2.8" fill="none" stroke-linecap="round" />
+                        <!-- Legs -->
+                        <line id="bullLegBL" x1="-17" y1="-4" x2="-19" y2="15" stroke="#d6d3d1" stroke-width="5.5" stroke-linecap="round" />
+                        <line id="bullLegBR" x1="-7" y1="-4" x2="-5" y2="15" stroke="#f5f5f4" stroke-width="5.5" stroke-linecap="round" />
+                        <line id="bullLegFL" x1="13" y1="-4" x2="11" y2="15" stroke="#d6d3d1" stroke-width="5.5" stroke-linecap="round" />
+                        <line id="bullLegFR" x1="21" y1="-4" x2="23" y2="15" stroke="#f5f5f4" stroke-width="5.5" stroke-linecap="round" />
+
+                        <!-- Sprained Leg Pain Indicator -->
+                        <g id="sprainIndicator" opacity="0" transform="translate(22, 9)">
+                            <circle cx="0" cy="0" r="11" fill="#ef4444" opacity="0.38" />
+                            <path d="M-7,-7 L7,7 M-7,7 L7,-7" stroke="#ef4444" stroke-width="2.5" />
+                            <text x="13" y="4" fill="#fca5a5" font-size="9.5" font-weight="bold" class="font-odia">ଗୋଡ଼ ମକଚି!</text>
+                        </g>
+
+                        <!-- Torso & Hump -->
+                        <rect x="-28" y="-30" width="56" height="28" rx="12" fill="#fafaf9" stroke="#78716c" stroke-width="1.5" />
+                        <circle id="bullHump" cx="-13" cy="-34" r="11" fill="#fafaf9" stroke="#78716c" stroke-width="1.5" />
+                        <path d="M17,-29 Q22,-14 15,-4" stroke="#ef4444" stroke-width="2.8" stroke-dasharray="3 2" fill="none" />
+                        <circle cx="19" cy="-11" r="3" fill="#facc15" />
+
+                        <!-- Bull Head -->
+                        <g id="bullHead" transform="translate(28, -24)">
+                            <ellipse cx="4" cy="0" rx="13" ry="10.5" fill="#fafaf9" stroke="#78716c" stroke-width="1.5" />
+                            <ellipse cx="13" cy="3" rx="5.5" ry="4.5" fill="#fca5a5" />
+                            <path d="M-2,-7 Q4,-22 13,-17" stroke="#57534e" stroke-width="3.8" fill="none" stroke-linecap="round" />
+                            <path d="M-6,-5 Q-4,-18 4,-16" stroke="#44403c" stroke-width="3.2" fill="none" stroke-linecap="round" />
+                            <circle id="bullEye" cx="6" cy="-3" r="2" fill="#1c1917" />
+                            <ellipse id="bullRoarMouth" cx="12" cy="5.5" rx="3.8" ry="2.8" fill="#991b1b" opacity="0" />
+                        </g>
+                    </g>
+                </g>
+
+                <!-- 8. LION KING PINGALAKA & ENTOURAGE (Scene 4, 5, 6) -->
+                <g id="pingalakaGroup" transform="translate(620, 382)" opacity="0" class="interactive-entity" onclick="inspectEntity('pingalaka')">
+                    <!-- Fear Thought Bubble -->
+                    <g id="lionFearBubble" transform="translate(-35, -102)" opacity="0">
+                        <rect x="-92" y="-26" width="184" height="30" rx="10" fill="#1c1917" stroke="#f59e0b" stroke-width="1.8" />
+                        <circle cx="-18" cy="12" r="4.5" fill="#1c1917" stroke="#f59e0b" stroke-width="1.5" />
+                        <text x="0" y="-7" text-anchor="middle" fill="#fca5a5" font-size="10.5" font-weight="bold" class="font-odia">ଏହା ନିଶ୍ଚୟ ମୋ’ଠାରୁ ବଳବାନ୍!</text>
+                    </g>
+
+                    <!-- Royal Entourage -->
+                    <g id="lionEntourage" transform="translate(60, -7)" opacity="0.85">
+                        <ellipse cx="0" cy="-15" rx="20" ry="12" fill="#d97706" />
+                        <circle cx="-16" cy="-24" r="9" fill="#b45309" />
+                        <line x1="-11" y1="-4" x2="-11" y2="11" stroke="#b45309" stroke-width="3.5" />
+                        <line x1="11" y1="-4" x2="11" y2="11" stroke="#b45309" stroke-width="3.5" />
+                    </g>
+
+                    <!-- King Pingalaka Body -->
+                    <g id="lionBody">
+                        <ellipse cx="0" cy="16" rx="38" ry="6.5" fill="#000" opacity="0.3" />
+                        <path d="M30,-18 Q48,-30 44,-11" stroke="#d97706" stroke-width="3.8" fill="none" stroke-linecap="round" />
+                        <circle cx="44" cy="-11" r="4.5" fill="#78350f" />
+                        <line x1="-18" y1="-4" x2="-22" y2="15" stroke="#d97706" stroke-width="6.5" stroke-linecap="round" />
+                        <line x1="-7" y1="-4" x2="-5" y2="15" stroke="#f59e0b" stroke-width="6.5" stroke-linecap="round" />
+                        <line x1="16" y1="-4" x2="14" y2="15" stroke="#d97706" stroke-width="6.5" stroke-linecap="round" />
+                        <line x1="26" y1="-4" x2="28" y2="15" stroke="#f59e0b" stroke-width="6.5" stroke-linecap="round" />
+                        <path d="M-26,-30 L26,-24 L26,-4 L-26,-4 Z" rx="11" fill="#f59e0b" stroke="#b45309" stroke-width="1.5" />
+                        <circle cx="-24" cy="-24" r="22" fill="#92400e" stroke="#78350f" stroke-width="2" />
+                        <circle cx="-28" cy="-24" r="14" fill="#fbbf24" />
+                        <!-- Crown -->
+                        <path d="M-38,-37 L-34,-48 L-28,-41 L-22,-48 L-18,-37 Z" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" />
+                        <circle id="lionEye" cx="-33" cy="-27" r="2.8" fill="#1c1917" />
+                        <path d="M-40,-20 Q-33,-16 -26,-20" stroke="#78350f" stroke-width="2" fill="none" />
+                        <!-- Sweat Drops -->
+                        <g id="lionSweat" opacity="0">
+                            <path d="M-45,-34 Q-49,-26 -43,-26 Q-39,-26 -45,-34 Z" fill="#38bdf8" />
+                            <path d="M-16,-42 Q-20,-34 -14,-34 Q-10,-34 -16,-42 Z" fill="#38bdf8" />
+                        </g>
+                    </g>
+                </g>
+
+                <!-- 9. FOREGROUND BANYAN TREE & TWO JACKALS (Scene 5 & Scene 6) -->
+                <g id="jackalsSceneGroup" transform="translate(0, 0)" opacity="0">
+                    <!-- Banyan Tree on Right -->
+                    <g transform="translate(695, 235)">
+                        <path d="M-28,210 Q-14,95 -18,0 L42,0 Q38,115 62,210 Z" fill="#451a03" />
+                        <line x1="-42" y1="10" x2="-42" y2="105" stroke="#5c2d16" stroke-width="2.8" />
+                        <line x1="-56" y1="5" x2="-56" y2="80" stroke="#5c2d16" stroke-width="2" />
+                        <circle cx="-10" cy="-18" r="80" fill="#14532d" />
+                        <circle cx="-60" cy="10" r="50" fill="#166534" />
+                        <circle cx="32" cy="10" r="60" fill="#15803d" />
+                    </g>
+
+                    <!-- Clever Jackal 1: DAMANAKA -->
+                    <g id="damanakaGroup" transform="translate(505, 400)" class="interactive-entity" onclick="inspectEntity('damanaka')">
+                        <ellipse cx="0" cy="13" rx="22" ry="4.5" fill="#000" opacity="0.35" />
+                        <path d="M16,-5 Q35,-15 32,4 Q22,7 16,-5 Z" fill="#c2410c" stroke="#7c2d12" stroke-width="1.5" />
+                        <ellipse cx="0" cy="-7" rx="19" ry="11" fill="#ea580c" />
+                        <line x1="-11" y1="0" x2="-13" y2="13" stroke="#c2410c" stroke-width="3.8" stroke-linecap="round" />
+                        <line x1="9" y1="0" x2="11" y2="13" stroke="#c2410c" stroke-width="3.8" stroke-linecap="round" />
+                        <g transform="translate(-17, -18)">
+                            <polygon points="-4,-7 0,-20 5,-7" fill="#c2410c" />
+                            <polygon points="4,-7 9,-20 13,-7" fill="#9a3412" />
+                            <circle cx="2" cy="-2" r="9.5" fill="#ea580c" />
+                            <polygon points="-13,0 0,-5.5 0,4.5" fill="#fb923c" />
+                            <circle cx="-13" cy="0" r="2" fill="#1c1917" />
+                            <circle cx="-2" cy="-3.5" r="2" fill="#fef08a" />
+                            <circle cx="-2" cy="-3.5" r="1" fill="#000" />
+                        </g>
+                        <rect x="-30" y="16" width="60" height="16" rx="5" fill="#431407" stroke="#f97316" stroke-width="1" />
+                        <text x="0" y="27" text-anchor="middle" fill="#ffedd5" font-size="9.5" font-weight="bold" class="font-odia">ଦମନକ</text>
+
+                        <!-- Damanaka Ambition Bubble (Scene 5) -->
+                        <!-- Damanaka Ambition Bubble (Scene 6) -->
+                        <g id="damanakaBubble" transform="translate(-25, -62)">
+                            <rect x="-74" y="-22" width="148" height="28" rx="9" fill="#fef3c7" stroke="#d97706" stroke-width="1.8" />
+                            <text x="0" y="-4" text-anchor="middle" fill="#78350f" font-size="9.5" font-weight="bold" class="font-odia">ମନ୍ତ୍ରୀତ୍ୱ ପୁନଃ ପ୍ରାପ୍ତ ହେବ! 💡</text>
+                        </g>
+                    </g>
+
+                    <!-- Cautious Jackal 2: KARATAKA -->
+                    <g id="karatakaGroup" transform="translate(608, 405)" class="interactive-entity" onclick="inspectEntity('karataka')">
+                        <ellipse cx="0" cy="13" rx="22" ry="4.5" fill="#000" opacity="0.35" />
+                        <path d="M16,-5 Q35,-13 32,4 Q22,7 16,-5 Z" fill="#9a3412" />
+                        <ellipse cx="0" cy="-7" rx="19" ry="11" fill="#b45309" />
+                        <line x1="-11" y1="0" x2="-11" y2="13" stroke="#92400e" stroke-width="3.8" stroke-linecap="round" />
+                        <line x1="9" y1="0" x2="9" y2="13" stroke="#92400e" stroke-width="3.8" stroke-linecap="round" />
+                        <g transform="translate(-17, -18)">
+                            <polygon points="-4,-7 0,-20 5,-7" fill="#92400e" />
+                            <polygon points="4,-7 9,-20 13,-7" fill="#78350f" />
+                            <circle cx="2" cy="-2" r="9.5" fill="#b45309" />
+                            <polygon points="-13,0 0,-5.5 0,4.5" fill="#d97706" />
+                            <circle cx="-13" cy="0" r="2" fill="#1c1917" />
+                            <circle cx="-2" cy="-3.5" r="2" fill="#fff" />
+                            <circle cx="-2" cy="-3.5" r="1" fill="#000" />
+                        </g>
+                        <rect x="-30" y="16" width="60" height="16" rx="5" fill="#292524" stroke="#d97706" stroke-width="1" />
+                        <text x="0" y="27" text-anchor="middle" fill="#fde68a" font-size="9.5" font-weight="bold" class="font-odia">କରଟକ</text>
+
+                        <!-- Karataka Monkey Warning Bubble (Scene 6) -->
+                        <g id="karatakaBubble" transform="translate(-5, -68)" opacity="0">
+                            <rect x="-85" y="-22" width="170" height="28" rx="9" fill="#1c1917" stroke="#ef4444" stroke-width="1.8" />
+                            <text x="0" y="-4" text-anchor="middle" fill="#fca5a5" font-size="9.5" font-weight="bold" class="font-odia">🐒 ଅତି ଚାଲାକିରୁ ବେକରେ ଫାଶ!</text>
+                        </g>
+                    </g>
+                </g>
+            </svg>
+
+            <!-- Top-Left Active Scene Pill Overlay -->
+            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-stone-950/85 border border-amber-500/40 px-2.5 py-1 rounded-lg backdrop-blur-md pointer-events-none shadow">
+                <span id="stageSceneBadge" class="font-odia text-xs font-bold text-amber-400">ଦୃଶ୍ୟ ୧ / ୬</span>
+            </div>
+
+            <!-- Floating Character Tooltip Inside Stage Bottom -->
+            <div id="entityInspectorPopup" class="absolute bottom-2 left-2 right-2 sm:left-auto sm:right-3 sm:max-w-xs bg-stone-950/95 border border-amber-400/70 rounded-xl p-2.5 shadow-2xl backdrop-blur-md transition-all duration-200 translate-y-24 opacity-0 pointer-events-none flex items-center justify-between gap-2.5 z-30">
+                <div class="flex items-center gap-2.5">
+                    <div id="inspectorIcon" class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-base shrink-0">
+                        🐂
+                    </div>
+                    <h4 id="inspectorTitleOdia" class="font-odia font-bold text-amber-300 text-sm">ବଳଦ</h4>
+                </div>
+                <button onclick="closeInspector()" class="text-stone-400 hover:text-white px-1.5 py-0.5 text-xs rounded bg-stone-800 shrink-0">✕</button>
+            </div>
+        </div>
+
+        <!-- Compact Interactive Scrubber Bar Pinned Under Stage -->
+        <div class="bg-stone-900/95 border-t border-stone-800 px-3 py-1.5">
+            <div class="max-w-5xl mx-auto flex items-center gap-2.5">
+                <button id="playPauseBtn" onclick="toggleAutoScroll()" class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] flex items-center gap-1 shrink-0 shadow transition">
+                    <span id="playIcon">▶</span>
+                    <span id="playText" class="hidden xs:inline">Auto</span>
+                </button>
+
+                <input
+                    id="masterScrubber"
+                    type="range"
+                    min="0"
+                    max="1000"
+                    value="0"
+                    aria-label="Scrub through story timeline"
+                    class="w-full story-scrubber"
+                    oninput="onManualScrub(this.value)"
+                />
+
+                <!-- Mobile Scene Dots (6 quick jump buttons) -->
+                <div class="flex sm:hidden items-center gap-1 shrink-0" id="mobileSceneDots">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- 2. CLEAN ODIA STORY FEED BELOW FIXED STAGE                              -->
+    <!-- ======================================================================= -->
+    <!-- Top spacer dynamically matches fixed header + stage height -->
+    <div id="topStageSpacer" class="w-full h-[46vh] sm:h-[49vh] max-h-[430px] min-h-[290px]"></div>
+
+    <main class="max-w-2xl mx-auto px-3 sm:px-6 pt-6 pb-36 relative z-10">
+
+        <!-- 6 Pure Odia Story Cards Container -->
+        <div id="storyCardsFeed" class="space-y-8 sm:space-y-10">
+            <!-- Dynamically populated by JS -->
+        </div>
+
+        <!-- Clean Back to Top Button -->
+        <div class="mt-14 text-center">
+            <button onclick="scrollToScene(0)" class="px-5 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 border border-amber-500/40 text-amber-300 font-odia text-sm font-bold transition shadow-lg">
+                ↑ ଆରମ୍ଭକୁ ଫେରନ୍ତୁ
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // ============================================================================
+        // PURE ODIA 6-SCENE STORY DATA
+        // ============================================================================
+        const ODIA_NUMERALS = ["୧", "୨", "୩", "୪", "୫", "୬"];
+
+        const STORY_SCENES = [
+            {
+                id: 1,
+                range: [0, 166],
+                emoji: "🐂",
+                soundType: "cart",
+                odiaParagraphs: [
+                    [
+                        "ବର୍ଦ୍ଧମାନକ ନାମରେ ଜଣେ ବଣିକ ଥିଲେ ।",
+                        "ସେ ବ୍ୟବସାୟ-ବାଣିଜ୍ୟପାଇଁ ଦେଶ ବିଦେଶ ଘୂରି ବୁଲୁଥିଲେ ।",
+                        "ଶଗଡ଼ ଟାଣିବାପାଇଁ ତାଙ୍କର ଦୁଇଟି ହୃଷ୍ଟପୁଷ୍ଟ ବଳଦ ଥିଲେ ।",
+                        "ବଳଦ ଦୁଇଟିକୁ ବର୍ଦ୍ଧମାନକ ଖୁବ୍ ଭଲ ପାଉଥିଲେ ଏବଂ ବଳଦ ଦୁଇଟିର ଖୁବ୍ ଯତ୍ନ ନେଉଥିଲେ ।"
+                    ]
+                ]
+            },
+            {
+                id: 2,
+                range: [167, 333],
+                emoji: "🌊",
+                soundType: "water",
+                odiaParagraphs: [
+                    [
+                        "ଥରେ ବଣିକ ବର୍ଦ୍ଧମାନକ ବିଭିନ୍ନ ପଣ୍ୟଦ୍ରବ୍ୟ ଶଗଡ଼ରେ ଲଦି ମହିଳାରୋପ୍ୟରୁ ମଥୁରା ଯାଉଥିଲେ ।",
+                        "ଦିନ ପରେ ଦିନ ସେ ଚାଲିଥାନ୍ତି ।",
+                        "କିନ୍ତୁ ରାସ୍ତା ସରୁ ନଥାଏ ।",
+                        "ଦିନେ ଯମୁନାନଦୀର ଧାରରେ କାଦୁଆ ରାସ୍ତାରେ ଶଗଡ଼ ନେଇ ଯାଉଥିବା ସମୟରେ ଗୋଟିଏ ବଳଦର ଗୋଡ଼ ମକଚି ହୋଇଯିବାରୁ ବଳଦଟି ପଡ଼ିଗଲା ।",
+                        "ଯେତେ ଚେଷ୍ଟା କଲେ ବି ବଳଦଟିକୁ ଉଠାଇବା ସମ୍ଭବ ହେଲା ନାହିଁ ।"
+                    ]
+                ]
+            },
+            {
+                id: 3,
+                range: [334, 500],
+                emoji: "🌙",
+                soundType: "cart",
+                odiaParagraphs: [
+                    [
+                        "ବର୍ଦ୍ଧମାନକ ତାଙ୍କର ପ୍ରିୟ ବଳଦର ସେବାଯତ୍ନ ପାଇଁ ସେହି ସ୍ଥାନରେ ତିନିଦିନ ତିନିରାତି ଅଟକି ରହିଲେ ।",
+                        "ସାଙ୍ଗରେ ଥିବା ଅନୁଚରବର୍ଗ ତାଙ୍କୁ କହିଲେ ଯେ, ସାମାନ୍ୟ ଗୋଟିଏ ବଳଦ ପାଇଁ ଏତେ ସମୟ ନଷ୍ଟ କରିବା ଉଚିତ ନୁହେଁ ।",
+                        "ବର୍ଦ୍ଧମାନକ ଚିନ୍ତାକଲେ- ସତେତ, ସାମାନ୍ୟ ଗୋଟିଏ ବଳଦପାଇଁ ବ୍ୟବସାୟ-ବାଣିଜ୍ୟରେ କ୍ଷତି କରିବା ଉଚିତ ନୁହେଁ ।",
+                        "ତେଣୁ ଆହତ ବଳଦଟିର ଦେଖାଶୁଣା କରିବାପାଇଁ ସେଠାରେ କେତେଜଣ ଲୋକଙ୍କୁ ରଖି ସେ ତାଙ୍କର ଗନ୍ତବ୍ୟ ପଥରେ ଚାଲିଲେ ।"
+                    ],
+                    [
+                        "ବଣିକ ବର୍ଦ୍ଧମାନକ ସେଠାରୁ ଯାଇ ନଯାଇଣୁ ବଳଦର ଯତ୍ନପାଇଁ ନିଯୁକ୍ତ ଲୋକମାନେ ଚିନ୍ତାକଲେ, ଗୋଟିଏ ବଳଦପାଇଁ ଯମୁନାର ଏଇ ନିର୍ଜନ କୂଳରେ ବସିରହିବା ଉଚିତ ନୁହେଁ ।",
+                        "ତା ଛଡ଼ା, ଏଇ ନିର୍ଜନ ବଣରେ ହିଂସ୍ରଜନ୍ତୁ ଯେ ନାହାଁନ୍ତି, କିଏ ବା ଜାଣେ ?",
+                        "ତେଣୁ ସେଠାରେ ରହିବା ନିରାପଦ ନୁହେଁ ମନେକରି ସେମାନେ ବଳଦଟିକୁ ଛାଡ଼ି ପଳାଇଗଲେ ।",
+                        "ବିଚରା ହତଭାଗ୍ୟ ବଳଦଟି ସେଠାରେ ଏକୁଟିଆ ଅସହାୟ ଓ ଆହତ ଅବସ୍ଥାରେ ନିଜର ଭାଗ୍ୟକୁ ଆଦରି ପଡ଼ିରହିଲା ।"
+                    ]
+                ]
+            },
+            {
+                id: 4,
+                range: [501, 666],
+                emoji: "🌿",
+                soundType: "bellow",
+                odiaParagraphs: [
+                    [
+                        "ପାଞ୍ଚ ସାତ ଦିନ ଏହିପରି କଟିଗଲା ।",
+                        "ଯମୁନା କୂଳର ନିର୍ମଳ ବାୟୁ ଓ ପୁଷ୍ଟିକର କଞ୍ଚାଘାସ ଖାଇ ବଳଦଟି ଠିଆ ହେଲା ଏବଂ ଛୋଟେଇ ଛୋଟେଇ ଚାଲିଲା ।",
+                        "କ୍ରମେ ବଳଦଟା ସୁସ୍ଥ ହେଲା ।",
+                        "ଆସ୍ତେ ଆସ୍ତେ ତାର ମକଚିଯାଇଥିବା ଗୋଡ଼ଟି ଭଲ ହୋଇଗଲା ।",
+                        "ବିନ୍ଧା ଛିଟିକା ବନ୍ଦ ହୋଇଗଲା ।",
+                        "ବଳଦଟି ଖାଇ ପିଇ ବେଶ୍ ହୃଷ୍ଟପୁଷ୍ଟ ହୋଇ ଡଉଲ ଡାଉଲ ଦେଖାଗଲା ।"
+                    ],
+                    [
+                        "ବଳଦଟି ନିଜ ଦେଶକୁ ଫେରିବାର ରାସ୍ତା ଜାଣି ନ ଥିଲା, ଏଣେ ପୁଣି ପ୍ରଚୁର ପୁଷ୍ଟିକର କଞ୍ଚାଘାସର ଲୋଭ- ସେ ସେହିଠାରେ ରହିଗଲା ।",
+                        "ବଳଦଟି ଦିନବେଳା ଯମୁନାର କୂଳେ କୂଳେ ଘାସ ଖାଇ ବୁଲୁଥାଏ ।",
+                        "ମଝିରେ ମଝିରେ ଭୀଷଣ ଗର୍ଜନ କରୁଥାଏ ।",
+                        "ବଳଦଟିର ଭୀଷଣ ଗର୍ଜନର ପ୍ରତିଧ୍ୱନିରେ ବଣ ପାହାଡ଼ କମ୍ପିଉଠୁଥାଏ ।",
+                        "ରାତି ହେଲେ ପାହାଡ଼ ତଳ ଗଛମୂଳେ ବଳଦଟି ଶୋଇଯାଉଥାଏ ।",
+                        "ଏଇଭାବରେ ବଳଦଟିର ଦିନ କଟିଯାଉଥାଏ ।"
+                    ]
+                ]
+            },
+            {
+                id: 5,
+                range: [667, 833],
+                emoji: "🦁",
+                soundType: "lion",
+                odiaParagraphs: [
+                    [
+                        "ସେହି ସମୟରେ ପିଙ୍ଗଳକ ନାମକ ଏକ ଭୟାନକ ସିଂହ ଥିଲା ସେହି ବଣର ରାଜା ।",
+                        "ଦିନେ ରାଜା ପିଙ୍ଗଳକ ତାର ପାତ୍ର, ମନ୍ତ୍ରୀ ଏବଂ ଅନୁଚରବର୍ଗ ଦ୍ୱାରା ପରିବେଷ୍ଟିତ ହୋଇ ଶିକାରପାଇଁ ବାହାରିଲା ।",
+                        "ଶିକାରପାଇଁ ଏଣେତେଣେ ବୁଲି ବୁଲି ପିଙ୍ଗଳକକୁ ଭୀଷଣ ଶୋଷ ହେଲା ।",
+                        "ଯମୁନାନଦୀର ମଧୁରଜଳ ପାନକରି ତୃଷ୍ଣା ମେଣ୍ଟାଇବାପାଇଁ ନଦୀବନ୍ଧ ତଳକୁ ଆସିଲାମାତ୍ରେ ବଣିକ ବର୍ଦ୍ଧମାନକଙ୍କର ପରିତ୍ୟକ୍ତ ବଳଦଟି ଭୀଷଣ ଗର୍ଜନ କରିଉଠିଲା ।"
+                    ],
+                    [
+                        "ଗର୍ଜନ ଶୁଣି ପଶୁରାଜ ପିଙ୍ଗଳକ ଭୟ ପାଇ ଭାବିଲା, ଏହା କେଉଁ ଭୟଙ୍କର ପ୍ରାଣୀର ଗର୍ଜନ ହୋଇପାରେ !",
+                        "ଏହି ପ୍ରାଣୀ ନିଶ୍ଚୟ ମୋ’ଠାରୁ ବଳବାନ୍ ।",
+                        "କିଏ ଜାଣେ, ଯଦି ପାଣି ପିଇବା ସମୟରେ ମୋତେ ଆକ୍ରମଣ କରେ... ଏହିପରି ଭାବି ପାଣି ନ ପିଇ ପଶୁରାଜ ପିଙ୍ଗଳକ ଫେରିଆସିଲା ।",
+                        "ରାଜାଙ୍କୁ ଭୟଭୀତ ହୋଇଥିବାର ଦେଖି ତାର ଅନୁଚରବର୍ଗ ମଧ୍ୟ ଭୟଭୀତ ହେଲେ ।"
+                    ]
+                ]
+            },
+            {
+                id: 6,
+                range: [834, 1000],
+                emoji: "🦊",
+                soundType: "jackal",
+                odiaParagraphs: [
+                    [
+                        "ଏଇ ସମୟରେ ଦୁଇ ଶୃଗାଳବନ୍ଧୁ- କରଟକ ଏବଂ ଦମନକ କିଛି ଦୂରରେ ଗଛ ଆଢ଼ୁଆଳରେ ବସି ଏହି ଦୃଶ୍ୟ ଦେଖୁଥିଲେ ।",
+                        "ଦୁଇବନ୍ଧୁ ପଶୁରାଜ ସିଂହର ମନ୍ତ୍ରୀପୁତ୍ର ।",
+                        "କୌଣସି କାରଣରୁ ପଶୁରାଜ ପିଙ୍ଗଳକ ଏହି ଦୁଇବନ୍ଧୁଙ୍କ ଉପରେ ଅସନ୍ତୁଷ୍ଟ ଥିଲେ ।",
+                        "ତେଣୁ ସେମାନେ ଅଧିକାରଚ୍ୟୁତ ହୋଇ ମନଦୁଃଖରେ ଥିଲେ ।"
+                    ],
+                    [
+                        "ଦୁଇ ଶୃଗାଳବନ୍ଧୁଙ୍କ ମଧ୍ୟରେ ଦମନକ ଥିଲା ଅଧିକ ଚତୁର ।",
+                        "ସେ କହିଲା, “ବନ୍ଧୁ କରଟକ, ଏଇ ସୁଯୋଗରେ ଭୀରୁ ରାଜାର ମନ୍ତ୍ରୀତ୍ୱ ଆମକୁ ପୁନଃ ପ୍ରାପ୍ତ ହେବ ।”"
+                    ],
+                    [
+                        "କରଟକ- “ଏହା କିପରି ସମ୍ଭବ ? ପଶୁରାଜ ସିଂହ ତ ଆମକୁ ଦୁଇଆଖିରେ ଦେଖିପାରେ ନାହିଁ ।”"
+                    ],
+                    [
+                        "ଦମନକ- “ଏବେ ସୁଯୋଗ ମିଳିଗଲା । ରାଜା ଭୟଭୀତ । ମନ୍ତ୍ରୀମାନେ ତତୋଽଧିକ ।",
+                        "ଏବେ ଯଦି ମୁଁ ରାଜାଙ୍କର ଭୟର କାରଣ ଦୂର କରି ପାରିବି, ତେବେ ମନ୍ତ୍ରୀତ୍ୱ ମୋର ହାତମୁଠାରେ ।”"
+                    ],
+                    [
+                        "କରଟକ- ଦେଖ ବନ୍ଧୁ, ଅବ୍ୟାପାରେ ବ୍ୟାପାର କର ନାହିଁ । ସେଥିରେ ବିପଦ ।",
+                        "ବେଶି ଚାଲାକ ହୋଇ ସେହି ଚପଳ ମାଙ୍କଡ଼ର ଅବସ୍ଥା ନ ହେଲେ ହେଲା ।"
+                    ],
+                    [
+                        "ଦମନକ ପଚାରିଲା, “ତାହା ପୁଣି କ’ଣ ?”",
+                        "“ଅତି ଚାଲାକିରୁ ବେକରେ ଫାଶ” ଗଳ୍ପଟି କରଟକ ଦମନକକୁ ଶୁଣାଇଲା ।"
+                    ]
+                ]
+            }
+        ];
+
+        const ENTITY_DETAILS = {
+            bardhamanaka: { icon: "👳🏾‍♂️", titleOdia: "ବଣିକ ବର୍ଦ୍ଧମାନକ", soundType: "cart" },
+            bull: { icon: "🐂", titleOdia: "ବର୍ଦ୍ଧମାନକଙ୍କ ବଳଦ", soundType: "bellow" },
+            yamuna: { icon: "🌊", titleOdia: "ଯମୁନା ନଦୀ", soundType: "water" },
+            attendants: { icon: "🏃🏾‍♂️", titleOdia: "ଅନୁଚରବର୍ଗ", soundType: "cart" },
+            pingalaka: { icon: "🦁", titleOdia: "ପଶୁରାଜ ପିଙ୍ଗଳକ", soundType: "lion" },
+            damanaka: { icon: "🦊", titleOdia: "ଦମନକ", soundType: "jackal" },
+            karataka: { icon: "🦊", titleOdia: "କରଟକ", soundType: "jackal" }
+        };
+
+        // ============================================================================
+        // STATE & SYNTHESIZED WEB AUDIO ENGINE
+        // ============================================================================
+        let currentProgress = 0; // 0 to 1000
+        let currentSceneIdx = 0;
+        let sfxEnabled = true;
+        let isAutoScrolling = false;
+        let autoScrollFrame = null;
+        let isDraggingScrubber = false;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === "suspended") {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSynthesizedSound(type) {
+            if (!sfxEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+
+                if (type === "bellow") {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = "sawtooth";
+                    osc.frequency.setValueAtTime(92, now);
+                    osc.frequency.exponentialRampToValueAtTime(138, now + 0.25);
+                    osc.frequency.exponentialRampToValueAtTime(72, now + 0.9);
+                    gain.gain.setValueAtTime(0.01, now);
+                    gain.gain.linearRampToValueAtTime(0.22, now + 0.14);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.95);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.95);
+                } else if (type === "water") {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = "sine";
+                    osc.frequency.setValueAtTime(420, now);
+                    osc.frequency.exponentialRampToValueAtTime(690, now + 0.35);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === "lion") {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = "triangle";
+                    osc.frequency.setValueAtTime(165, now);
+                    osc.frequency.exponentialRampToValueAtTime(62, now + 0.55);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                } else if (type === "jackal") {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = "sine";
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.setValueAtTime(670, now + 0.12);
+                    gain.gain.setValueAtTime(0.14, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = "triangle";
+                    osc.frequency.setValueAtTime(230, now);
+                    osc.frequency.exponentialRampToValueAtTime(115, now + 0.15);
+                    gain.gain.setValueAtTime(0.14, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.16);
+                }
+            } catch (e) {}
+        }
+
+        // ============================================================================
+        // RENDER CLEAN ODIA STORY CARDS & NAVIGATION DOTS
+        // ============================================================================
+        function initApp() {
+            syncSpacerHeight();
+            renderSceneDots();
+            renderStoryCardsFeed();
+            handleWindowScroll();
+            window.addEventListener("scroll", handleWindowScroll, { passive: true });
+            window.addEventListener("resize", () => {
+                syncSpacerHeight();
+                handleWindowScroll();
+            });
+        }
+
+        function syncSpacerHeight() {
+            const fixedBox = document.getElementById("fixedTopViewport");
+            const spacer = document.getElementById("topStageSpacer");
+            if (fixedBox && spacer) {
+                spacer.style.height = `${fixedBox.offsetHeight}px`;
+            }
+        }
+
+        function renderSceneDots() {
+            const desktopDots = document.getElementById("headerSceneDots");
+            const mobileDots = document.getElementById("mobileSceneDots");
+
+            const desktopHTML = STORY_SCENES.map((s, idx) => `
+                <button
+                    onclick="scrollToScene(${idx})"
+                    class="px-2 py-0.5 rounded-full text-[11px] font-bold transition flex items-center gap-1 ${
+                        idx === currentSceneIdx
+                            ? 'bg-amber-500 text-stone-950 shadow'
+                            : 'text-stone-400 hover:text-amber-200'
+                    }"
+                >
+                    <span>${s.emoji}</span>
+                    <span class="font-odia">${ODIA_NUMERALS[idx]}</span>
+                </button>
+            `).join("");
+
+            const mobileHTML = STORY_SCENES.map((s, idx) => `
+                <button
+                    onclick="scrollToScene(${idx})"
+                    aria-label="Scene ${s.id}"
+                    class="w-5 h-5 rounded-full text-[11px] font-odia font-bold flex items-center justify-center transition ${
+                        idx === currentSceneIdx
+                            ? 'bg-amber-500 text-stone-950 scale-110 shadow'
+                            : 'bg-stone-800 text-stone-400'
+                    }"
+                >
+                    ${ODIA_NUMERALS[idx]}
+                </button>
+            `).join("");
+
+            if (desktopDots) desktopDots.innerHTML = desktopHTML;
+            if (mobileDots) mobileDots.innerHTML = mobileHTML;
+        }
+
+        function renderStoryCardsFeed() {
+            const feed = document.getElementById("storyCardsFeed");
+            feed.innerHTML = STORY_SCENES.map((scene, idx) => {
+                let sentenceCounter = 0;
+                const paragraphsHTML = scene.odiaParagraphs.map(sentences => {
+                    const spans = sentences.map(sent => {
+                        const sIdx = sentenceCounter++;
+                        return `<span class="odia-sentence" data-scene="${idx}" data-sent="${sIdx}">${sent}</span>`;
+                    }).join(" ");
+                    return `<p class="leading-[2.05] tracking-wide">${spans}</p>`;
+                }).join("");
+
+                return `
+                    <article
+                        id="story-card-${idx}"
+                        data-scene-index="${idx}"
+                        data-total-sentences="${sentenceCounter}"
+                        onclick="scrollToScene(${idx})"
+                        class="story-card rounded-2xl border-2 p-5 sm:p-7 cursor-pointer ${idx === 0 ? 'active-card' : 'inactive-card'}"
+                    >
+                        <div class="font-odia text-lg sm:text-xl text-parchment-900 space-y-4">
+                            ${paragraphsHTML}
+                        </div>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        // ============================================================================
+        // SCROLLYTELLING ENGINE: CALCULATE CONTINUOUS PROGRESS & SENTENCE HIGHLIGHT
+        // ============================================================================
+        function handleWindowScroll() {
+            if (isDraggingScrubber) return;
+
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+
+            const rawProgress = Math.max(0, Math.min(1000, (scrollTop / maxScroll) * 1000));
+
+            const fixedHeight = document.getElementById("fixedTopViewport")?.offsetHeight || 280;
+            const triggerY = fixedHeight + (window.innerHeight - fixedHeight) * 0.38;
+
+            const cards = document.querySelectorAll(".story-card");
+            let activeIdx = 0;
+            let computedProgress = rawProgress;
+
+            cards.forEach((card, idx) => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top <= triggerY) {
+                    activeIdx = idx;
+                    const cardFrac = Math.max(0, Math.min(1, (triggerY - rect.top) / Math.max(1, rect.height)));
+                    const sceneRange = STORY_SCENES[idx].range;
+                    computedProgress = sceneRange[0] + cardFrac * (sceneRange[1] - sceneRange[0]);
+                }
+            });
+
+            updateVisualState(computedProgress, activeIdx);
+        }
+
+        function onManualScrub(val) {
+            isDraggingScrubber = true;
+            const numericVal = parseFloat(val);
+            const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+            const targetScrollY = (numericVal / 1000) * maxScroll;
+
+            window.scrollTo({ top: targetScrollY, behavior: "auto" });
+
+            let activeIdx = 0;
+            for (let i = 0; i < STORY_SCENES.length; i++) {
+                if (numericVal >= STORY_SCENES[i].range[0] && numericVal <= STORY_SCENES[i].range[1]) {
+                    activeIdx = i;
+                    break;
+                }
+            }
+            updateVisualState(numericVal, activeIdx);
+
+            clearTimeout(window._scrubReleaseTimer);
+            window._scrubReleaseTimer = setTimeout(() => {
+                isDraggingScrubber = false;
+            }, 120);
+        }
+
+        function scrollToScene(sceneIdx) {
+            const card = document.getElementById(`story-card-${sceneIdx}`);
+            const fixedHeight = document.getElementById("fixedTopViewport")?.offsetHeight || 280;
+            if (card) {
+                const topPos = card.getBoundingClientRect().top + window.scrollY - fixedHeight - 20;
+                window.scrollTo({ top: Math.max(0, topPos), behavior: "smooth" });
+                playSynthesizedSound(STORY_SCENES[sceneIdx].soundType);
+            }
+        }
+
+        function updateVisualState(progress, activeIdx) {
+            currentProgress = Math.max(0, Math.min(1000, progress));
+            const pct = Math.round(currentProgress / 10);
+
+            document.getElementById("masterScrubber").value = currentProgress;
+            document.getElementById("headerPercentBadge").textContent = `${pct}%`;
+            document.getElementById("topLinearProgress").style.width = `${pct}%`;
+
+            const sceneChanged = activeIdx !== currentSceneIdx;
+            currentSceneIdx = activeIdx;
+            const scene = STORY_SCENES[currentSceneIdx];
+
+            if (sceneChanged) {
+                renderSceneDots();
+                document.querySelectorAll(".story-card").forEach((c, idx) => {
+                    if (idx === currentSceneIdx) {
+                        c.classList.add("active-card");
+                        c.classList.remove("inactive-card");
+                    } else {
+                        c.classList.remove("active-card");
+                        c.classList.add("inactive-card");
+                    }
+                });
+                playSynthesizedSound(scene.soundType);
+            }
+
+            document.getElementById("stageSceneBadge").textContent = `ଦୃଶ୍ୟ ${ODIA_NUMERALS[currentSceneIdx]} / ୬`;
+
+            const span = scene.range[1] - scene.range[0];
+            const localT = Math.max(0, Math.min(1, (currentProgress - scene.range[0]) / Math.max(1, span)));
+
+            // Highlight the active sentence inside the active scene card
+            highlightActiveSentence(currentSceneIdx, localT);
+
+            animateSVGStage(currentSceneIdx, localT, currentProgress);
+        }
+
+        function highlightActiveSentence(sceneIdx, localT) {
+            const activeCard = document.getElementById(`story-card-${sceneIdx}`);
+            const totalSentences = parseInt(activeCard?.getAttribute("data-total-sentences") || "1", 10);
+            const targetSentenceIdx = Math.min(totalSentences - 1, Math.floor(localT * totalSentences));
+
+            document.querySelectorAll(".odia-sentence").forEach(span => {
+                const sScene = parseInt(span.getAttribute("data-scene"), 10);
+                const sIdx = parseInt(span.getAttribute("data-sent"), 10);
+                if (sScene === sceneIdx && sIdx === targetSentenceIdx) {
+                    span.classList.add("active-sentence");
+                } else {
+                    span.classList.remove("active-sentence");
+                }
+            });
+        }
+
+        // ============================================================================
+        // CONTINUOUS SVG STAGE ANIMATION CONTROLLER (6 SCENES)
+        // ============================================================================
+        function animateSVGStage(sceneIdx, t, globalP) {
+            const skyStop1 = document.getElementById("skyStop1");
+            const skyStop2 = document.getElementById("skyStop2");
+            const skyStop3 = document.getElementById("skyStop3");
+            const starsGroup = document.getElementById("starsGroup");
+            const sunEl = document.getElementById("sunEl");
+            const moonEl = document.getElementById("moonEl");
+            const waterRipples = document.getElementById("waterRipples");
+            const mudPatchGroup = document.getElementById("mudPatchGroup");
+            const lushGrassGroup = document.getElementById("lushGrassGroup");
+            const scene3Extras = document.getElementById("scene3Extras");
+            const fleeingAttendants = document.getElementById("fleeingAttendants");
+            const merchantCartGroup = document.getElementById("merchantCartGroup");
+            const cartWheel = document.getElementById("cartWheel");
+            const cartBody = document.getElementById("cartBody");
+            const heroBullWrapper = document.getElementById("heroBullWrapper");
+            const heroBullBody = document.getElementById("heroBullBody");
+            const bullLegFL = document.getElementById("bullLegFL");
+            const bullLegFR = document.getElementById("bullLegFR");
+            const bullLegBL = document.getElementById("bullLegBL");
+            const bullLegBR = document.getElementById("bullLegBR");
+            const sprainIndicator = document.getElementById("sprainIndicator");
+            const bullRoarWaves = document.getElementById("bullRoarWaves");
+            const bullRoarMouth = document.getElementById("bullRoarMouth");
+            const roarRing1 = document.getElementById("roarRing1");
+            const roarRing2 = document.getElementById("roarRing2");
+            const roarRing3 = document.getElementById("roarRing3");
+            const mountainsLayer = document.getElementById("mountainsLayer");
+            const pingalakaGroup = document.getElementById("pingalakaGroup");
+            const lionFearBubble = document.getElementById("lionFearBubble");
+            const lionSweat = document.getElementById("lionSweat");
+            const jackalsSceneGroup = document.getElementById("jackalsSceneGroup");
+            const damanakaBubble = document.getElementById("damanakaBubble");
+            const karatakaBubble = document.getElementById("karatakaBubble");
+
+            const rippleOffset = Math.sin(globalP * 0.09) * 18;
+            waterRipples.setAttribute("transform", `translate(${rippleOffset}, 0)`);
+
+            // Base resets
+            skyStop1.setAttribute("stop-color", "#38bdf8");
+            skyStop2.setAttribute("stop-color", "#bae6fd");
+            skyStop3.setAttribute("stop-color", "#fef3c7");
+            starsGroup.setAttribute("opacity", "0");
+            sunEl.setAttribute("opacity", "1");
+            sunEl.setAttribute("transform", `translate(${650 - t * 65}, 70)`);
+            moonEl.setAttribute("opacity", "0");
+            mudPatchGroup.setAttribute("opacity", "0");
+            lushGrassGroup.setAttribute("opacity", "0");
+            scene3Extras.setAttribute("opacity", "0");
+            merchantCartGroup.setAttribute("opacity", "1");
+            cartBody.setAttribute("transform", "rotate(0)");
+            sprainIndicator.setAttribute("opacity", "0");
+            bullRoarWaves.setAttribute("opacity", "0");
+            bullRoarMouth.setAttribute("opacity", "0");
+            mountainsLayer.setAttribute("transform", "translate(0,0)");
+            pingalakaGroup.setAttribute("opacity", "0");
+            lionFearBubble.setAttribute("opacity", "0");
+            lionSweat.setAttribute("opacity", "0");
+            jackalsSceneGroup.setAttribute("opacity", "0");
+            heroBullBody.setAttribute("transform", "rotate(0) scale(1)");
+
+            const walkAngle = Math.sin(globalP * 0.25) * 6;
+            bullLegFL.setAttribute("x2", 11 + walkAngle);
+            bullLegFR.setAttribute("x2", 23 - walkAngle);
+            bullLegBL.setAttribute("x2", -19 - walkAngle);
+            bullLegBR.setAttribute("x2", -5 + walkAngle);
+
+            // ----------------------------------------------------------------
+            // SCENE 1: ବର୍ଦ୍ଧମାନକ ଓ ତାଙ୍କର ଦୁଇଟି ହୃଷ୍ଟପୁଷ୍ଟ ବଳଦ
+            // ----------------------------------------------------------------
+            if (sceneIdx === 0) {
+                const cartX = 55 + t * 220;
+                merchantCartGroup.setAttribute("transform", `translate(${cartX}, 382)`);
+                cartWheel.setAttribute("transform", `translate(-36, -7) rotate(${globalP * 3.8})`);
+                heroBullWrapper.setAttribute("transform", `translate(${cartX + 102}, 386)`);
+            }
+
+            // ----------------------------------------------------------------
+            // SCENE 2: ଯମୁନାନଦୀର ଧାରରେ କାଦୁଆ ରାସ୍ତାରେ ବଳଦର ଗୋଡ଼ ମକଚି ପଡ଼ିଯିବା
+            // ----------------------------------------------------------------
+            else if (sceneIdx === 1) {
+                mudPatchGroup.setAttribute("opacity", "1");
+                const cartX = 245 + Math.min(0.45, t) * 85;
+                merchantCartGroup.setAttribute("transform", `translate(${cartX}, 382)`);
+                cartWheel.setAttribute("transform", `translate(-36, -7) rotate(${240 + Math.min(0.45, t) * 160})`);
+
+                const bullX = cartX + 102;
+                heroBullWrapper.setAttribute("transform", `translate(${bullX}, 390)`);
+
+                if (t > 0.25) {
+                    const fallP = Math.min(1, (t - 0.25) / 0.45);
+                    heroBullBody.setAttribute("transform", `translate(0, ${fallP * 13}) rotate(${fallP * 22})`);
+                    cartBody.setAttribute("transform", `rotate(${fallP * 6})`);
+                    sprainIndicator.setAttribute("opacity", String(fallP));
+                    bullLegFL.setAttribute("x2", "4");
+                    bullLegFR.setAttribute("x2", "29");
+                }
+            }
+
+            // ----------------------------------------------------------------
+            // SCENE 3: ତିନିଦିନ ତିନିରାତି ଅଟକି ରହିବା, ବଣିକଙ୍କ ପ୍ରସ୍ଥାନ ଓ ଅନୁଚରଙ୍କ ପଳାୟନ
+            // ----------------------------------------------------------------
+            else if (sceneIdx === 2) {
+                mudPatchGroup.setAttribute("opacity", "1");
+                heroBullWrapper.setAttribute("transform", "translate(380, 390)");
+                heroBullBody.setAttribute("transform", "translate(0, 13) rotate(22)");
+                sprainIndicator.setAttribute("opacity", "1");
+                bullLegFL.setAttribute("x2", "4");
+                bullLegFR.setAttribute("x2", "29");
+
+                if (t < 0.5) {
+                    const waitT = t / 0.5;
+                    const nightWave = Math.sin(waitT * Math.PI);
+                    if (nightWave > 0.2) {
+                        skyStop1.setAttribute("stop-color", "#0f172a");
+                        skyStop2.setAttribute("stop-color", "#1e1b4b");
+                        skyStop3.setAttribute("stop-color", "#31102f");
+                        starsGroup.setAttribute("opacity", String(nightWave));
+                        sunEl.setAttribute("opacity", String(1 - nightWave));
+                        moonEl.setAttribute("opacity", String(nightWave));
+                        moonEl.setAttribute("transform", `translate(${620 - waitT * 260}, 68)`);
+                    }
+                    merchantCartGroup.setAttribute("transform", `translate(${285 + waitT * 340}, 382)`);
+                    merchantCartGroup.setAttribute("opacity", String(Math.max(0, 1 - waitT * 1.4)));
+                } else {
+                    merchantCartGroup.setAttribute("opacity", "0");
+                    scene3Extras.setAttribute("opacity", "1");
+                    const fleeT = (t - 0.5) / 0.5;
+                    fleeingAttendants.setAttribute("transform", `translate(${420 + fleeT * 330}, 382)`);
+                }
+            }
+
+            // ----------------------------------------------------------------
+            // SCENE 4: ପୁଷ୍ଟିକର କଞ୍ଚାଘାସ ଖାଇ ସୁସ୍ଥ ହେବା ଓ ଭୀଷଣ ଗର୍ଜନରେ ବଣ ପାହାଡ଼ କମ୍ପିବା
+            // ----------------------------------------------------------------
+            else if (sceneIdx === 3) {
+                merchantCartGroup.setAttribute("opacity", "0");
+                mudPatchGroup.setAttribute("opacity", String(Math.max(0, 1 - t * 3)));
+                sprainIndicator.setAttribute("opacity", String(Math.max(0, 1 - t * 3)));
+
+                lushGrassGroup.setAttribute("opacity", String(Math.min(1, t * 1.8)));
+                const standT = Math.min(1, t * 2);
+                const scaleVal = 1 + Math.max(0, t - 0.3) * 0.32;
+                heroBullWrapper.setAttribute("transform", "translate(310, 384)");
+                heroBullBody.setAttribute("transform", `translate(0, ${(1 - standT) * 12}) rotate(${(1 - standT) * 20}) scale(${scaleVal})`);
+
+                if (t > 0.45) {
+                    const roarT = (t - 0.45) / 0.55;
+                    bullRoarWaves.setAttribute("opacity", "1");
+                    bullRoarMouth.setAttribute("opacity", "1");
+                    const pulse = (roarT * 3) % 1;
+                    roarRing1.setAttribute("r", String(20 + pulse * 85));
+                    roarRing2.setAttribute("r", String(40 + pulse * 135));
+                    roarRing3.setAttribute("r", String(65 + pulse * 185));
+
+                    const shakeX = Math.sin(globalP * 1.7) * 4.5;
+                    const shakeY = Math.cos(globalP * 2.0) * 2.5;
+                    mountainsLayer.setAttribute("transform", `translate(${shakeX}, ${shakeY})`);
+                }
+            }
+
+            // ----------------------------------------------------------------
+            // SCENE 5: ପଶୁରାଜ ପିଙ୍ଗଳକଙ୍କ ଶୋଷ, ଗର୍ଜନ ଶୁଣି ଭୟ ଓ ଫେରିଆସିବା
+            // ----------------------------------------------------------------
+            else if (sceneIdx === 4) {
+                merchantCartGroup.setAttribute("opacity", "0");
+                lushGrassGroup.setAttribute("opacity", "1");
+                heroBullWrapper.setAttribute("transform", "translate(165, 384)");
+                heroBullBody.setAttribute("transform", "scale(1.22)");
+                pingalakaGroup.setAttribute("opacity", "1");
+
+                let lionX = 640 - Math.min(0.4, t) * 410;
+                if (t > 0.36) {
+                    const retreatT = (t - 0.36) / 0.64;
+                    lionX = 476 + retreatT * 185;
+
+                    bullRoarWaves.setAttribute("opacity", "1");
+                    bullRoarMouth.setAttribute("opacity", "1");
+                    const pulse = (retreatT * 3.5) % 1;
+                    roarRing1.setAttribute("r", String(28 + pulse * 150));
+                    roarRing2.setAttribute("r", String(60 + pulse * 220));
+                    roarRing3.setAttribute("r", String(95 + pulse * 290));
+
+                    const trembleX = Math.sin(globalP * 2.2) * 4;
+                    mountainsLayer.setAttribute("transform", `translate(${trembleX}, 0)`);
+                    lionX += trembleX;
+
+                    lionFearBubble.setAttribute("opacity", "1");
+                    lionSweat.setAttribute("opacity", "1");
+                }
+                pingalakaGroup.setAttribute("transform", `translate(${lionX}, 382)`);
+            }
+
+            // ----------------------------------------------------------------
+            // SCENE 6: କରଟକ ଓ ଦମନକଙ୍କ କଥାବାର୍ତ୍ତା ଏବଂ “ଅତି ଚାଲାକିରୁ ବେକରେ ଫାଶ”
+            // ----------------------------------------------------------------
+            else if (sceneIdx === 5) {
+                merchantCartGroup.setAttribute("opacity", "0");
+                lushGrassGroup.setAttribute("opacity", "1");
+                heroBullWrapper.setAttribute("transform", "translate(105, 388)");
+                heroBullBody.setAttribute("transform", "scale(0.92)");
+
+                pingalakaGroup.setAttribute("opacity", "0.82");
+                pingalakaGroup.setAttribute("transform", "translate(315, 378) scale(0.8)");
+                lionSweat.setAttribute("opacity", "1");
+
+                jackalsSceneGroup.setAttribute("opacity", "1");
+                if (t < 0.55) {
+                    damanakaBubble.setAttribute("opacity", "1");
+                    karatakaBubble.setAttribute("opacity", "0");
+                } else {
+                    damanakaBubble.setAttribute("opacity", "0.25");
+                    karatakaBubble.setAttribute("opacity", "1");
+                }
+            }
+        }
+
+        // ============================================================================
+        // AUTO-SCROLL & UI CONTROLS
+        // ============================================================================
+        function toggleAutoScroll() {
+            isAutoScrolling = !isAutoScrolling;
+            const playIcon = document.getElementById("playIcon");
+            const playText = document.getElementById("playText");
+
+            if (isAutoScrolling) {
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                if (window.scrollY >= maxScroll - 10) {
+                    window.scrollTo({ top: 0, behavior: "auto" });
+                }
+                playIcon.textContent = "⏸";
+                if (playText) playText.textContent = "Pause";
+                autoScrollFrame = requestAnimationFrame(stepAutoScroll);
+            } else {
+                playIcon.textContent = "▶";
+                if (playText) playText.textContent = "Auto";
+                if (autoScrollFrame) cancelAnimationFrame(autoScrollFrame);
+            }
+        }
+
+        function stepAutoScroll() {
+            if (!isAutoScrolling) return;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (window.scrollY >= maxScroll - 2) {
+                toggleAutoScroll();
+                return;
+            }
+            window.scrollBy(0, 1.4);
+            autoScrollFrame = requestAnimationFrame(stepAutoScroll);
+        }
+
+        function inspectEntity(key) {
+            const info = ENTITY_DETAILS[key];
+            if (!info) return;
+            playSynthesizedSound(info.soundType);
+
+            document.getElementById("inspectorIcon").textContent = info.icon;
+            document.getElementById("inspectorTitleOdia").textContent = info.titleOdia;
+
+            const popup = document.getElementById("entityInspectorPopup");
+            popup.classList.remove("translate-y-24", "opacity-0", "pointer-events-none");
+            popup.classList.add("translate-y-0", "opacity-100");
+        }
+
+        function closeInspector() {
+            const popup = document.getElementById("entityInspectorPopup");
+            popup.classList.add("translate-y-24", "opacity-0", "pointer-events-none");
+            popup.classList.remove("translate-y-0", "opacity-100");
+        }
+
+        function toggleAudio() {
+            sfxEnabled = !sfxEnabled;
+            document.getElementById("soundIcon").textContent = sfxEnabled ? "🔊" : "🔇";
+            const lbl = document.getElementById("soundLabel");
+            if (lbl) lbl.textContent = sfxEnabled ? "SFX" : "Mute";
+            if (sfxEnabled) playSynthesizedSound("water");
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
